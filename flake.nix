@@ -30,6 +30,7 @@
           alejandra
 
           rust-analyzer
+          rustfmt
         ];
 
         inputsFrom = [self.packages.${pkgs.stdenv.hostPlatform.system}.default];

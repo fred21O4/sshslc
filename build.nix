@@ -8,10 +8,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   src = ./.;
 
-  cargoHash = "sha256-TAqPwKsfSfrVQC3gKavUBmt/qvvVLHvKDsTo+lDT7Mo=";
+  cargoHash = "sha256-92M6KcS4xyAo5FXJ8GKZIAf2S01CiMDUeFgowSwWod8=";
 
   meta = {
-    description = "A short lived ssh certificate issuing server";
+    mainProgram = "sshslc";
+    description = "A dead simple short lived ssh certificate issuing server";
     license = lib.licenses.mit;
     maintainers = [];
   };
