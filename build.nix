@@ -4,11 +4,11 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "sshslc";
-  version = "0.0.1";
+  version = "0.0.2";
 
   src = ./.;
 
-  cargoHash = "sha256-92M6KcS4xyAo5FXJ8GKZIAf2S01CiMDUeFgowSwWod8=";
+  cargoHash = "sha256-ZxZ1cemk0vjKnDEMt6MXaiqs7kihQs1YM7dAfCgQFVI=";
 
   meta = {
     mainProgram = "sshslc";
