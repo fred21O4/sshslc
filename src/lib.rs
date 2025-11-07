@@ -88,7 +88,7 @@ enum CertType {
     Host,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 struct CertOption {
     name: String,
     data: Option<String>,
@@ -103,8 +103,35 @@ struct CertConfig {
     #[serde(default = "one_min")] // Serde is annoying and doesnt let us just put 60 here
     valid_for: u64, // Length of time for each cert to be valid for in seconds defaults to 1min
     principles: Vec<String>,
-    critical_options: Option<Vec<CertOption>>,
-    extensions: Option<Vec<CertOption>>,
+    #[serde(default = "Vec::new")]
+    critical_options: Vec<CertOption>,
+    #[serde(default = "default_extensions")]
+    extensions: Vec<CertOption>,
+}
+
+fn default_extensions() -> Vec<CertOption> {
+    vec![
+        CertOption {
+            name: "permit-X11-forwarding".into(),
+            ..Default::default()
+        },
+        CertOption {
+            name: "permit-agent-forwarding".into(),
+            ..Default::default()
+        },
+        CertOption {
+            name: "permit-port-forwarding".into(),
+            ..Default::default()
+        },
+        CertOption {
+            name: "permit-pty".into(),
+            ..Default::default()
+        },
+        CertOption {
+            name: "permit-user-rc".into(),
+            ..Default::default()
+        },
+    ]
 }
 
 pub async fn get_cert_for_host_key(
@@ -171,16 +198,12 @@ pub async fn get_cert_for_host_key(
         cert_builder.key_id(id)?;
     }
 
-    if let Some(options) = cert_config.critical_options {
-        for option in options {
-            cert_builder.critical_option(option.name, option.data.unwrap_or_default())?;
-        }
+    for option in cert_config.critical_options {
+        cert_builder.critical_option(option.name, option.data.unwrap_or_default())?;
     }
 
-    if let Some(extensions) = cert_config.extensions {
-        for option in extensions {
-            cert_builder.extension(option.name, option.data.unwrap_or_default())?;
-        }
+    for option in cert_config.extensions {
+        cert_builder.extension(option.name, option.data.unwrap_or_default())?;
     }
 
     let ca_key_path = match cert_config.cert_type {
